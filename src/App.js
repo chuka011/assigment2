@@ -1,25 +1,49 @@
 import React, { Component } from 'react';
-import './App.css';
-import ValidationComponent from './ValidationComponent'
+import Validation from './Validation/Validation'
+import Char from './Char/Char'
+
 class App extends Component {
   state = {
-      str: "",
-      numberOfChars: 0
+      userInput: "",
+      strArr: []
   };
 
    charInputHandler = (event) => {
     const str = event.target.value;
     this.setState({
-      str: str,
-      numberOfChars: str.length
+      userInput: str,
+      strArr: str.split('')
     })
   }
+
+  deleteCharHandler = (index) => {
+    const strArr = [...this.state.strArr];
+    strArr.splice(index, 1);
+    const str = strArr.join('');
+    this.setState({
+      userInput: str,
+      strArr: strArr
+    });
+  }
   render() {
+
+    const CharComponentArr =
+      this.state.userInput.split('').map( (e,index) => {
+        return <Char
+          ch={e}
+          key={index}
+          click={() => this.deleteCharHandler(index)}/>
+      });
+
     return (
       <div className="App">
-        <input type="text" onChange={this.charInputHandler} value={this.state.str}/>
-        <p>Number of chars: {this.state.numberOfChars}</p>
-        <ValidationComponent len={this.state.numberOfChars}/>
+        <input
+          type="text"
+          onChange={this.charInputHandler}
+          value={this.state.userInput}/>
+        <p>Number of chars: {this.state.userInput.length}</p>
+        <Validation len={this.state.userInput.length}/>
+        {CharComponentArr}
       </div>
     );
   }
